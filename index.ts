@@ -1,8 +1,6 @@
 // Make illegal states unrepresentable 
 
-// based on https://www.youtube.com/watch?v=2JB1_e5wZmU&feature=youtu.be
-
-// algebric type  
+// algebraic types  
 type CheckNumber = number;
 type CardNumber = string;
 type CardType = "Visa" | "MasterCard";
@@ -19,7 +17,7 @@ const pay: PaymentMethod = { method: "Cash" }
 
 
 // nominal type
-type String50 = string & { String50: true };
+type String50 = string & { __String50: true };  // & { __brand: true } permet d'identifier que c'est une string soumise à des contraintes supplémentaires
 const isString50 = (s: string): s is String50 => {
     if (s.length <= 50) {
         return true;
@@ -43,7 +41,10 @@ if (isString50(azer)) {
 }
 
 
-// generic create and cast
+// generic of, create and cast ----------------------------------------------------------------------
+type UndescoredString<U extends string> = `__${U}`;
+// equivalent 'of' of F# (generic nominal type)
+type Of<T,U extends string> = T & { [key in UndescoredString<U>]: true };
 type TypeGuard<T, U extends T> = (value: T) => value is U;
 type Create<T, U extends T> = (value: T) => U | undefined;
 type Cast<T, U extends T> = (value: T) => U;
@@ -61,8 +62,9 @@ const cast = <T,U extends T>(typeGuard: TypeGuard<T, U>): Cast<T,U> => (value) =
     }
     throw new Error(`Cast error: value '${value}' does not respect type guard '${typeGuard.name}'.`);
 }
+// ---------------------------------------------------------------------------------------------------
 
-type EmailAddress = string & { EmailAddress: true };
+type EmailAddress = Of<string,'EmailAddress'>;
 const isEmailAddress = (s: string): s is EmailAddress => {
     if (s.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)) {
         return true;
@@ -84,17 +86,17 @@ try {
 }
 
 
-type VerifiedEmail = EmailAddress & { VerifiedEmail: true };
+type VerifiedEmail = Of<EmailAddress,'VerifiedEmail'>;
 type VerificationService = (p: {EmailAddres:EmailAddress, VerificationHash: any}) => VerifiedEmail | undefined;
 const isEmailVerified = (s: EmailAddress): s is VerifiedEmail => {
     return s.length !== 0;
 }
 
-type UnverifiedEmail = EmailAddress & { UnverifiedEmail: true };
+type UnverifiedEmail = Of<EmailAddress,'UnverifiedEmail'>;
 
 type EmailContactInfo = VerifiedEmail | UnverifiedEmail;
 
-type PostalContactInfo = string & { PostalContactInfo: true };
+type PostalContactInfo = Of<string,'PostalContactInfo'>;
 
 type ContactInfo = 
     {email: EmailContactInfo} | 
@@ -116,16 +118,17 @@ const contactInfo3: ContactInfo = {
 //const contactInfo4: ContactInfo = {} // will fail
 
 
+// Train
 
 // combinaison de type 
-type StringOfNumbers = string & { StringOfNumbers: true };
+type StringOfNumbers = Of<string,'StringOfNumbers'>;
 const isStringOfNumbers = (s: string): s is StringOfNumbers => {
     if (s.match(/^[0-9]*$/)) {
         return true;
     }
     return false;
 }
-type String4Or6 = string & { String4Or6: true };
+type String4Or6 = Of<string,'String4Or6'>;
 const isString4Or6 = (s: string): s is String4Or6 => {
     if (s.length === 4 || s.length === 6) {
         return true;
@@ -147,4 +150,27 @@ try {
     console.log("success train number");
 } catch (error) {
     console.error(error);
+}
+
+// Tennis
+
+type Point = "Love" | "Fifteen" | "Thirty" | "Forty"
+type Player = 'PlayerOne' | 'PlayerTwo'
+
+type UnconstrainedPoints = {
+    PlayerOne: Point;
+    PlayerTwo: Point;
+}
+type Points = Of<UnconstrainedPoints,'Points'>;
+const isPoints = (p: UnconstrainedPoints): p is Points => {
+    if (p.PlayerOne !== "Forty" || p.PlayerTwo !== "Forty") {
+        return true;
+    }
+    return false;
+}
+const castPoints = cast(isPoints);
+
+type Forty = {
+    player: Player,
+    otherPlayerPoint: Exclude<Point,"Forty">
 }
