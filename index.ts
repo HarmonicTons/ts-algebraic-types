@@ -26,7 +26,7 @@ const isString50 = (s: string): s is String50 => {
 }
 const createString50 = (s: string): String50 | undefined => {
     if (isString50(s)) {
-        return s as String50;
+        return s;
     }
     return;
 }
@@ -42,9 +42,9 @@ if (isString50(azer)) {
 
 
 // generic of, create and cast ----------------------------------------------------------------------
-type UndescoredString<U extends string> = `__${U}`;
+type UnderscoredString<U extends string> = `__${U}`;
 // equivalent 'of' of F# (generic nominal type)
-type Of<T,U extends string> = T & { [key in UndescoredString<U>]: true };
+type Of<T,U extends string> = T & { [key in UnderscoredString<U>]: true };
 type TypeGuard<T, U extends T> = (value: T) => value is U;
 type Create<T, U extends T> = (value: T) => U | undefined;
 type Cast<T, U extends T> = (value: T) => U;
@@ -92,12 +92,15 @@ const isEmailVerified = (s: EmailAddress): s is VerifiedEmail => {
     return s.length !== 0;
 }
 
-type UnverifiedEmail = Of<EmailAddress,'UnverifiedEmail'>;
+type UnverifiedEmail = EmailAddress;
 
 type EmailContactInfo = VerifiedEmail | UnverifiedEmail;
 
 type PostalContactInfo = Of<string,'PostalContactInfo'>;
+const isPostalContactInfo = (s: string): s is PostalContactInfo => true; // use your imagination
+const castPostalContactInfo = cast(isPostalContactInfo);
 
+// 1 or the other, both, but not none
 type ContactInfo = 
     {email: EmailContactInfo} | 
     {postal: PostalContactInfo} |
@@ -105,14 +108,14 @@ type ContactInfo =
 
 
 const contactInfo1: ContactInfo = {
-    email: "azer@mail.com" as UnverifiedEmail
+    email: castEmailAddress("azer@mail.com")
 }
 const contactInfo2: ContactInfo = {
-    postal: "5 rue des marais" as PostalContactInfo
+    postal: castPostalContactInfo("5 rue des marais")
 }
 const contactInfo3: ContactInfo = {
-    email: "azer@mail.com" as UnverifiedEmail,
-    postal: "5 rue des marais" as PostalContactInfo
+    email: castEmailAddress("azer@mail.com"),
+    postal: castPostalContactInfo("5 rue des marais")
 }
 
 //const contactInfo4: ContactInfo = {} // will fail
