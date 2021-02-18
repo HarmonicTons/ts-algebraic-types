@@ -1,0 +1,1 @@
+# DDD and algebraic types in TS with AJV
