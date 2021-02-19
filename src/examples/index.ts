@@ -4,7 +4,7 @@ import {
   typeHandlersIntersection,
   typeHandlersUnion,
   Validator,
-} from 'src/main';
+} from '../main';
 import * as R from 'ramda';
 
 // basic
