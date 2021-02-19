@@ -29,7 +29,7 @@ const speed = calculateSpeed(time, distance);
 ```
 
 # Handle a nominal type
-You should use `as` as less as possible. Instead use a type handler by declaring the business rule associated to the nominal type.
+You should use `as` as less as possible. Instead use a type handler by declaring the business rule associated to your nominal type.
 
 
 
