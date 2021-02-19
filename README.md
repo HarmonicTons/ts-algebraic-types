@@ -66,7 +66,7 @@ const myEvenNumber: EvenNumber = evenNumberTypeHandler.cast(6);
 const myEvenNumber: EvenNumber = 6; 
 // will compile BUT is unsafe (no validation of business rule) :
 const myEvenNumber: EvenNumber = 6 as EvenNumber; 
-const myEvenNumber: EvenNumber = 5 as EvenNumber; // !!
+const myEvenNumber: EvenNumber = 5 as EvenNumber; // no error !!
 // will compile AND is safe:
 const myEvenNumber: EvenNumber = evenNumberTypeHandler.cast(6);
 // will compile and throw an error on runtime:
