@@ -48,8 +48,8 @@ const myEvenNumber: EvenNumber = evenNumberTypeHandler.cast(6);
 ## Create a Type Handler from custom validator :
 ```ts
 type EvenNumber = Of<number, "EvenNumber">
-const evenNumberTypeHandler = makeTypeHandler<number, EvenNumber>((candidate) => {
-    if (candidate % 2 !== 0) {
+const evenNumberTypeHandler = makeTypeHandler<number, EvenNumber>((n: number) => {
+    if (n % 2 !== 0) {
         return "should be a multiple of 2";
     }
 });
