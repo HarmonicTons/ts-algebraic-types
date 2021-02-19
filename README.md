@@ -22,10 +22,8 @@ const distance = 5 as Meter;
 const time = 10 as Second;
 const speed = calculateSpeed(distance, time);
 ```
-In the example above, you could not invert distance and time in the function parameters, the code would not compile:
+In the example above, you could not invert distance and time, the code would not compile:
 ```ts
-const distance = 5 as Meter;
-const time = 10 as Second;
 const speed = calculateSpeed(time, distance);
 //                           ^^^^ compile error: Second is not of type Meter
 ```
